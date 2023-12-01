@@ -1,9 +1,12 @@
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <ctime>
-#include <chrono>
+//THE LIBRARY SYSTEM FOR COMPUTER PROGRAMMING PROJECT//
+//HEADER//
+#include <iostream> //FOR READING CODE
+#include <string> //TO INCLUDE STRING
+#include <fstream> //FOR READING AND CREATING FILES
+#include <ctime> //FOR THE DUE DATE FUNCTION
+#include <chrono> //FOR DUE DATE FUNCTION
 
+//FOR CLEARING THE CONSOLE SCREEN
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -12,6 +15,7 @@
 
 using namespace std;
 
+//FOR CLEARING THE CONSOLE SCREEN
 void clearScreen() {
 #ifdef _WIN32
     system("cls");
@@ -20,6 +24,7 @@ void clearScreen() {
 #endif
 }
 
+//FOR CHECKING THE ACCOUNT EXISTENCE AND TO CHECK THE USERNAME AND PASSWORD CORRECTNESS
 bool isloggedin(string& username) {
     string password, un, pw;
 
@@ -39,14 +44,18 @@ bool isloggedin(string& username) {
     }
 }
 
+
+//FOR THE SEARCH FUNCTION
 bool searchbook() {
     string search_input;
     cout << "Enter book's title or author: ";
     cin.ignore();  // Ignore any newline characters in the buffer
-    getline(cin, search_input);
+    getline(cin, search_input); //To take the entire line of entry by the user
 
-    ifstream read("c:\\" + search_input + ".txt");
+    ifstream read("c:\\" + search_input + ".txt"); //to search for the file of the users account
 
+
+    //if function if the username and password match an existing accoutn record
     if (read.is_open()) {
         string title, author;
         getline(read, title);
@@ -64,6 +73,8 @@ bool searchbook() {
     }
 }
 
+
+//TO CHECK IF THE BOOK BEING BORROWED IS AVAILABLE OR NOT
 bool isBookBorrowed(const string& search_input) {
     ifstream bookFile("c:\\" + search_input + ".txt");
     string line;
@@ -78,8 +89,9 @@ bool isBookBorrowed(const string& search_input) {
     return false;
 }
 
-string calculateDueDate(); 
+string calculateDueDate(); //declaration for the book due date
 
+//FUNCTION TO BORROW A BOOK
 bool borrowbook(const string& username) {
     string search_input;
     cout << "Enter book's title to borrow: ";
@@ -91,7 +103,7 @@ bool borrowbook(const string& username) {
         return false;
     }
 
-    ifstream read("c:\\" + search_input + ".txt");
+    ifstream read("c:\\" + search_input + ".txt"); //search for the file of the book being borrowed
 
     if (read.is_open()) {
         string title, author;
@@ -135,6 +147,7 @@ bool borrowbook(const string& username) {
     }
 }
 
+//FUNCTION TO REGISTER BOOKS BEING DONATED.
 bool registerbook() {
     string book_title, book_author;
 
@@ -154,6 +167,7 @@ bool registerbook() {
     return true;
 }
 
+//FUNCTION FOR BOOKS BEING RETURNED
 bool returnbook(const string& username) {
     string return_input;
     cout << "Enter book's title to return: ";
@@ -222,6 +236,7 @@ string calculateDueDate() {
     return ctime(&dueTime);  // Convert time to string
 }
 
+//DISPLAYS THE BORROWED BOOKS BY THE ACCOUNT
 void displayUserBorrowedBooks(const string& username) {
     cout << "YOUR BORROWED BOOKS:" << endl;
 
@@ -239,6 +254,8 @@ int main() {
     int account_choice, menu_choice;
     string username;
 
+
+    //ACCOUNT LOG IN OR REGISTER
     cout << "~~WELCOME TO THE LIBRARY SYSTEM~~" << endl;
     cout << "[1] Register" << endl;
     cout << "[2] Log in" << endl;
@@ -278,6 +295,8 @@ int main() {
         return 0;
     }
 
+
+    //MAIN SYSTEM MENU
     do {
         cout << "WELCOME " << username << "!" << endl;
         cout << "\n" << endl;
@@ -325,7 +344,8 @@ int main() {
 
     } while (!(menu_choice == 6));
 
-    cout << "This should be the exit choice and end of the program" << endl;
+    cout << "~EXITING THE LIBRARY SYSTEM~" << endl;
+    cout<< "Thank you for your using our system~"<<endl
 
     return 0;
 }
