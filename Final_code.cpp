@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
-#include <cstdlib>
 #include <fstream>
 #include <ctime>
+#include <chrono>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -78,6 +78,8 @@ bool isBookBorrowed(const string& search_input) {
     return false;
 }
 
+string calculateDueDate(); 
+
 bool borrowbook(const string& username) {
     string search_input;
     cout << "Enter book's title to borrow: ";
@@ -113,9 +115,9 @@ bool borrowbook(const string& username) {
         userBorrowedBooksFile.close();
 
         if (!alreadyBorrowed) {
-            // Update the user's list of borrowed books
+            // Update the user's list of borrowed books with due date
             ofstream userBorrowedBooksFile("c:\\" + username + "_borrowed_books.txt", ios::app);
-            userBorrowedBooksFile << search_input << endl;
+            userBorrowedBooksFile << search_input << " (Due by: " << calculateDueDate() << ")" << endl;
             userBorrowedBooksFile.close();
 
             // Update the book file to indicate it's borrowed by the user
@@ -123,7 +125,7 @@ bool borrowbook(const string& username) {
             book_file << "Borrowed by: " << username << endl;
             book_file.close();
 
-            cout << "Book successfully borrowed!" << endl;
+            cout << "Book successfully borrowed! Due by: " << calculateDueDate() << endl;
         }
 
         return true;
@@ -167,7 +169,7 @@ bool returnbook(const string& username) {
     ofstream tempFile("c:\\" + username + "_temp.txt");
 
     while (getline(userBorrowedBooksFile, borrowedTitle)) {
-        if (borrowedTitle == return_input) {
+        if (borrowedTitle.find(return_input) != string::npos) {
             // Book is found, indicating it was borrowed by the user
             found = true;
             cout << "Book successfully returned!" << endl;
@@ -209,6 +211,15 @@ bool returnbook(const string& username) {
     updatedBookFile.close();
 
     return true;
+}
+
+string calculateDueDate() {
+    // Calculate due date as two weeks from the current date
+    auto now = chrono::system_clock::now();
+    auto dueDate = now + chrono::hours(24 * 14);  // 14 days
+
+    time_t dueTime = chrono::system_clock::to_time_t(dueDate);
+    return ctime(&dueTime);  // Convert time to string
 }
 
 void displayUserBorrowedBooks(const string& username) {
